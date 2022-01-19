@@ -51,9 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
         chatsRV.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
-            public void onLayoutChange(View v, int left, int top, int right,int bottom, int oldLeft, int oldTop,int oldRight, int oldBottom)
-            {
-                chatsRV.scrollToPosition(chatsRV.getAdapter().getItemCount()-1);
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                chatsRV.scrollToPosition(chatsRV.getAdapter().getItemCount() - 1);
             }
         });
 
@@ -70,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         chatsRV.setAdapter(chatRVAdapter);
         chatsRV.setNestedScrollingEnabled(false);
 
-
         chatsModelArrayList.add(new ChatsModel("Hi! Im your recipe bot!", BOT_KEY));
         chatRVAdapter.notifyDataSetChanged();
 
@@ -84,44 +82,55 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Please enter your message", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 switch (counter) {
                     case 0:
                         ingredients = userMsgEdt.getText().toString();
                         userMsgEdt.setText("");
+
                         chatsModelArrayList.add(new ChatsModel(ingredients, USER_KEY));
                         chatRVAdapter.notifyDataSetChanged();
-                        counter = 1;
+                        scrollDown();
+
                         chatsModelArrayList.add(new ChatsModel("How many do you want to see? Enter a number between 1 and 15", BOT_KEY));
                         chatRVAdapter.notifyDataSetChanged();
+                        scrollDown();
+
+                        counter = 1;
+
                         break;
-
-
                     case 1:
-
                         howMany = userMsgEdt.getText().toString();
                         userMsgEdt.setText("");
+
                         chatsModelArrayList.add(new ChatsModel(howMany, USER_KEY));
                         chatRVAdapter.notifyDataSetChanged();
+                        scrollDown();
+
                         getRecipeByIngredients(ingredients, howMany);
                         break;
+
 
                     case 2:
                         numberChoice = userMsgEdt.getText().toString();
                         userMsgEdt.setText("");
+
                         chatsModelArrayList.add(new ChatsModel(numberChoice, USER_KEY));
                         chatRVAdapter.notifyDataSetChanged();
+                        scrollDown();
+
                         chooseRecipe(numberChoice);
                         break;
 
                     case 3:
                         message = userMsgEdt.getText().toString();
+                        scrollDown();
                         userMsgEdt.setText("");
                         chatsModelArrayList.add(new ChatsModel(message, USER_KEY));
                         chatRVAdapter.notifyDataSetChanged();
-                        counter = 3;
+                        scrollDown();
                         chat(message);
                         break;
-
 
                 }
 
@@ -130,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void scrollDown(){
+    private void scrollDown() {
         chatsRV.scrollToPosition(chatsModelArrayList.size() - 1);
     }
 
@@ -139,155 +148,15 @@ public class MainActivity extends AppCompatActivity {
         return isFound;
     }
 
-    private void chat(String message) {
+    private boolean isNumberInString(String str) {
 
-        String url = "https://masterchefbot.herokuapp.com/chat?msg=" + message;
-        String BASE_URL = "https://masterchefbot.herokuapp.com/";
+        for (int i = 0; i <= str.length(); i++) {
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class);
-        Call<MsgModel> call = retrofitAPI.getMessage(url);
-
-        call.enqueue(new Callback<MsgModel>() {
-            @Override
-            public void onResponse(Call<MsgModel> call, Response<MsgModel> response) {
-                if (response.isSuccessful()) {
-                    MsgModel msg = response.body();
-                    msg.setchatBotReply(msg.getCnt());
-                    if (isNumeric(msg.getCnt())) {
-
-                        if (Integer.parseInt(msg.getCnt()) == 1) {
-                            chatsModelArrayList.add(new ChatsModel("Here you can start with new ingredients!", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-
-                            counter = 0;
-
-                            chatsModelArrayList.add(new ChatsModel("Write your ingredients separated by space", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
-
-                        } else if (Integer.parseInt(msg.getCnt()) == 2) {
-
-                            chatsModelArrayList.add(new ChatsModel("You are welcome!", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-
-                            counter = 3;
-
-                            chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
-                                    " You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
-                        }
-
-                    } else {
-
-                        if (stringSearch("Welcome (back) to the overview:", msg.getCnt())) {
-                            chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-
-                            counter = 2;
-
-                            chatsModelArrayList.add(new ChatsModel("Please enter the number of the recipe that you want!", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
-
-
-                        }
-                        else {
-                            chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-
-                            counter = 3;
-
-                            chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
-                                    "You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
-
-                        }
-
-
-                    }
-
-                } else {
-                    chatsModelArrayList.add(new ChatsModel("Please check the message", BOT_KEY));
-                    chatRVAdapter.notifyDataSetChanged();
-                    scrollDown();
-
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MsgModel> call, Throwable t) {
-                Log.e(TAG, String.valueOf(t));
-                chatsModelArrayList.add(new ChatsModel("Error processing response", BOT_KEY));
-                scrollDown();
-            }
-        });
-
-
-    }
-
-    private void chooseRecipe(String choice) {
-
-        if (isNumeric(choice)) {
-
-            String url = "https://masterchefbot.herokuapp.com/chooseRecipe?nr=" + choice;
-            String BASE_URL = "https://masterchefbot.herokuapp.com/";
-
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build();
-            RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class);
-            Call<MsgModel> call = retrofitAPI.getMessage(url);
-
-            call.enqueue(new Callback<MsgModel>() {
-                @Override
-                public void onResponse(Call<MsgModel> call, Response<MsgModel> response) {
-                    if (response.isSuccessful()) {
-                        MsgModel msg = response.body();
-                        msg.setchatBotReply(msg.getCnt());
-
-                        chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
-                        chatRVAdapter.notifyDataSetChanged();
-
-                        counter = 3;
-
-                        chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
-                                "You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
-                        chatRVAdapter.notifyDataSetChanged();
-                        scrollDown();
-
-                    } else {
-                        chatsModelArrayList.add(new ChatsModel("Please check the message. There are only " + numberOfRecipes + ".", BOT_KEY));
-                        chatRVAdapter.notifyDataSetChanged();
-                        scrollDown();
-
-
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<MsgModel> call, Throwable t) {
-                    Log.e(TAG, String.valueOf(t));
-                    chatsModelArrayList.add(new ChatsModel("Error processing response", BOT_KEY));
-                    scrollDown();
-                }
-            });
-
-        } else {
-            chatsModelArrayList.add(new ChatsModel("Please enter a valid number", BOT_KEY));
-            chatRVAdapter.notifyDataSetChanged();
-            scrollDown();
+            if (isNumeric(String.valueOf(str.charAt(i)))) return true;
 
         }
 
-
+        return false;
     }
 
     public boolean isNumeric(String str) {
@@ -299,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void countBackSlash(String aString) {
+    public void countRecipes(String aString) {
         int countBackSlash = 0;
         for (int i = 0; i < aString.length(); i++) {
             if (aString.charAt(i) == '\n') countBackSlash++;
@@ -331,14 +200,18 @@ public class MainActivity extends AppCompatActivity {
                         if (Integer.parseInt(msg.getCnt()) == 1) {
                             chatsModelArrayList.add(new ChatsModel("You have not entered a number between 1 or 15. Enter a valid number...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
                             counter = 1;
 
                             chatsModelArrayList.add(new ChatsModel("How many do you want to see? Enter a number between 1 and 15", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
                         } else if (Integer.parseInt(msg.getCnt()) == 0) {
-                            chatsModelArrayList.add(new ChatsModel("There are no recipes available for the entered ingredients or you have not entered valid ingredients. Please start again...", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown or inputs are invalid. Please start again...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
                             counter = 0;
 
                             chatsModelArrayList.add(new ChatsModel("Write your ingredients separated by space", BOT_KEY));
@@ -348,37 +221,32 @@ public class MainActivity extends AppCompatActivity {
 
                     } else {
 
-                        countBackSlash(msg.getCnt());
-                        if(numberOfRecipes == 0){
-                            chatsModelArrayList.add(new ChatsModel("There are no recipes...Here you can start with new ingredients!", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-
-                            counter = 0;
-
-                            chatsModelArrayList.add(new ChatsModel("Write your ingredients separated by space", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
-
-                        }
-                        else if (numberOfRecipes < Integer.parseInt(number) - 1) {
+                        countRecipes(msg.getCnt());
+                        if (numberOfRecipes < Integer.parseInt(number)) {
                             chatsModelArrayList.add(new ChatsModel("There are only " + numberOfRecipes + " recipes...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
-                            chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            counter = 2;
-                            chatsModelArrayList.add(new ChatsModel("Please enter the number of the recipe that you want!", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
-                        }
-                        else {
-                            chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            counter = 2;
-                            chatsModelArrayList.add(new ChatsModel("Please enter the number of the recipe that you want!", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
-                        }
 
+                            chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            counter = 2;
+
+                            chatsModelArrayList.add(new ChatsModel("Please enter the number of the recipe that you want!", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+                        } else {
+
+                            chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+
+                            counter = 2;
+
+                            chatsModelArrayList.add(new ChatsModel("Please enter the number of the recipe that you want!", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+                        }
 
 
                     }
@@ -399,6 +267,191 @@ public class MainActivity extends AppCompatActivity {
                 scrollDown();
             }
         });
+    }
+
+    private void chooseRecipe(String choice) {
+
+
+        if (isNumberInString(choice) && Integer.parseInt(choice) <= numberOfRecipes && 1 <= Integer.parseInt(choice)) {
+
+
+            String url = "https://masterchefbot.herokuapp.com/chooseRecipe?nr=" + choice;
+            String BASE_URL = "https://masterchefbot.herokuapp.com/";
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class);
+            Call<MsgModel> call = retrofitAPI.getMessage(url);
+
+            call.enqueue(new Callback<MsgModel>() {
+                @Override
+                public void onResponse(Call<MsgModel> call, Response<MsgModel> response) {
+                    if (response.isSuccessful()) {
+                        MsgModel msg = response.body();
+                        msg.setchatBotReply(msg.getCnt());
+
+
+                        if (isNumeric(msg.getCnt())) {
+
+                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown. Starting again...", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            counter = 0;
+
+                            chatsModelArrayList.add(new ChatsModel("Write your ingredients separated by space", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                        } else {
+                            chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            counter = 3;
+
+                            chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
+                                    "You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+                        }
+
+
+                    } else {
+                        chatsModelArrayList.add(new ChatsModel("Please check the message. There are only " + numberOfRecipes + ".", BOT_KEY));
+                        chatRVAdapter.notifyDataSetChanged();
+                        scrollDown();
+
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<MsgModel> call, Throwable t) {
+                    Log.e(TAG, String.valueOf(t));
+                    chatsModelArrayList.add(new ChatsModel("Error processing response", BOT_KEY));
+                    scrollDown();
+                }
+            });
+
+        } else {
+            chatsModelArrayList.add(new ChatsModel("Please enter a valid number between number 1 and " + numberOfRecipes, BOT_KEY));
+            chatRVAdapter.notifyDataSetChanged();
+            scrollDown();
+
+        }
+
+
+    }
+
+    private void chat(String message) {
+
+        String url = "https://masterchefbot.herokuapp.com/chat?msg=" + message;
+        String BASE_URL = "https://masterchefbot.herokuapp.com/";
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class);
+        Call<MsgModel> call = retrofitAPI.getMessage(url);
+
+        call.enqueue(new Callback<MsgModel>() {
+            @Override
+            public void onResponse(Call<MsgModel> call, Response<MsgModel> response) {
+                if (response.isSuccessful()) {
+                    MsgModel msg = response.body();
+                    msg.setchatBotReply(msg.getCnt());
+                    if (isNumeric(msg.getCnt())) {
+
+                        if (Integer.parseInt(msg.getCnt()) == 1) {
+                            chatsModelArrayList.add(new ChatsModel("Here you can start with new ingredients!", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            counter = 0;
+
+                            chatsModelArrayList.add(new ChatsModel("Write your ingredients separated by space", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                        } else if (Integer.parseInt(msg.getCnt()) == 2) {
+
+                            chatsModelArrayList.add(new ChatsModel("You are welcome!", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            counter = 3;
+
+                            chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
+                                    " You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+                        } else if (Integer.parseInt(msg.getCnt()) == 3) {
+
+                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown!", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            counter = 3;
+
+                            chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
+                                    " You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+                        }
+
+                    } else {
+
+                        if (stringSearch("Welcome (back) to the overview:", msg.getCnt())) {
+                            chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            counter = 2;
+
+                            chatsModelArrayList.add(new ChatsModel("Please enter the number of the recipe that you want!", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+
+                        } else {
+                            chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            counter = 3;
+
+                            chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
+                                    "You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                        }
+
+
+                    }
+
+                } else {
+                    chatsModelArrayList.add(new ChatsModel("Please check the message", BOT_KEY));
+                    chatRVAdapter.notifyDataSetChanged();
+                    scrollDown();
+
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MsgModel> call, Throwable t) {
+                Log.e(TAG, String.valueOf(t));
+                chatsModelArrayList.add(new ChatsModel("Error processing response", BOT_KEY));
+                scrollDown();
+            }
+        });
+
+
     }
 
 
