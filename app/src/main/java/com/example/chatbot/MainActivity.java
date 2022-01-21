@@ -39,6 +39,43 @@ public class MainActivity extends AppCompatActivity {
     private String message;
     private int numberOfRecipes;
 
+    private void scrollDown() {
+        chatsRV.scrollToPosition(chatsModelArrayList.size() - 1);
+    }
+
+    private boolean stringSearch(String toBeSearched, String str) {
+        boolean isFound = str.indexOf(toBeSearched) != -1 ? true : false;
+        return isFound;
+    }
+
+    private boolean isNumberInString(String str) {
+
+        for (int i = 0; i <= str.length(); i++) {
+
+            if (isNumeric(String.valueOf(str.charAt(i)))) return true;
+
+        }
+
+        return false;
+    }
+
+    public boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public void countRecipes(String aString) {
+        int countBackSlash = 0;
+        for (int i = 0; i < aString.length(); i++) {
+            if (aString.charAt(i) == '\n') countBackSlash++;
+        }
+        numberOfRecipes = countBackSlash;
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,13 +129,24 @@ public class MainActivity extends AppCompatActivity {
                         chatRVAdapter.notifyDataSetChanged();
                         scrollDown();
 
-                        chatsModelArrayList.add(new ChatsModel("How many do you want to see? Enter a number between 1 and 15", BOT_KEY));
-                        chatRVAdapter.notifyDataSetChanged();
-                        scrollDown();
+                        if (stringSearch("vegetarian", ingredients)) {
 
-                        counter = 1;
+                            getVegetarianRecipes();
 
-                        break;
+                            break;
+
+                        } else {
+
+                            chatsModelArrayList.add(new ChatsModel("How many do you want to see? Enter a number between 1 and 15", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            counter = 1;
+
+                            break;
+
+                        }
+
                     case 1:
                         howMany = userMsgEdt.getText().toString();
                         userMsgEdt.setText("");
@@ -139,46 +187,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void scrollDown() {
-        chatsRV.scrollToPosition(chatsModelArrayList.size() - 1);
-    }
-
-    private boolean stringSearch(String toBeSearched, String str) {
-        boolean isFound = str.indexOf(toBeSearched) != -1 ? true : false;
-        return isFound;
-    }
-
-    private boolean isNumberInString(String str) {
-
-        for (int i = 0; i <= str.length(); i++) {
-
-            if (isNumeric(String.valueOf(str.charAt(i)))) return true;
-
-        }
-
-        return false;
-    }
-
-    public boolean isNumeric(String str) {
-        try {
-            Integer.parseInt(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    public void countRecipes(String aString) {
-        int countBackSlash = 0;
-        for (int i = 0; i < aString.length(); i++) {
-            if (aString.charAt(i) == '\n') countBackSlash++;
-        }
-        numberOfRecipes = countBackSlash;
-    }
-
-    private void getRecipeByIngredients(String ingredients, String number) {
-
-        String url = "https://masterchefbot.herokuapp.com/getRecipeByIngredients?ingr=" + ingredients + "&nr=" + number;
+    private void getVegetarianRecipes() {
+        String url = "https://masterchefbot.herokuapp.com/get-vegetarian-recipes";
         String BASE_URL = "https://masterchefbot.herokuapp.com/";
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -197,7 +207,73 @@ public class MainActivity extends AppCompatActivity {
 
                     if (isNumeric(msg.getCnt())) {
 
-                        if (Integer.parseInt(msg.getCnt()) == 1) {
+                        int exceptionNumber = Integer.parseInt(msg.getCnt());
+
+                        if (exceptionNumber == 0) {
+
+                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown. Calling your request again! Hold on...", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            getVegetarianRecipes();
+
+                        } else if (exceptionNumber == 10) {
+
+                            chatsModelArrayList.add(new ChatsModel("Recipe API is not available now! Try again later", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+                            return;
+
+                        }
+
+                    } else {
+                        countRecipes(msg.getCnt());
+
+                        chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
+                        chatRVAdapter.notifyDataSetChanged();
+                        scrollDown();
+
+                        counter = 2;
+
+                        chatsModelArrayList.add(new ChatsModel("Please enter the number of the recipe that you want!", BOT_KEY));
+                        chatRVAdapter.notifyDataSetChanged();
+                        scrollDown();
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MsgModel> call, Throwable t) {
+                Log.e(TAG, String.valueOf(t));
+                chatsModelArrayList.add(new ChatsModel("Error processing response", BOT_KEY));
+                scrollDown();
+            }
+        });
+    }
+
+    private void getRecipeByIngredients(String ingredients, String number) {
+        String url = "https://masterchefbot.herokuapp.com/get-recipe-by-user-ingredients?ingredients=" + ingredients + "&number=" + number;
+        String BASE_URL = "https://masterchefbot.herokuapp.com/";
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        RetrofitAPI retrofitAPI = retrofit.create(RetrofitAPI.class);
+        Call<MsgModel> call = retrofitAPI.getMessage(url);
+
+        call.enqueue(new Callback<MsgModel>() {
+            @Override
+            public void onResponse(Call<MsgModel> call, Response<MsgModel> response) {
+                if (response.isSuccessful()) {
+                    MsgModel msg = response.body();
+                    msg.setchatBotReply(msg.getCnt());
+
+                    if (isNumeric(msg.getCnt())) {
+
+                        int errorNumber = Integer.parseInt(msg.getCnt());
+                        if (errorNumber == 1) {
                             chatsModelArrayList.add(new ChatsModel("You have not entered a number between 1 or 15. Enter a valid number...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
@@ -207,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
                             chatsModelArrayList.add(new ChatsModel("How many do you want to see? Enter a number between 1 and 15", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
-                        } else if (Integer.parseInt(msg.getCnt()) == 0) {
+                        } else if (errorNumber == 2) {
                             chatsModelArrayList.add(new ChatsModel("Internal exception thrown or inputs are invalid. Please start again...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
@@ -217,6 +293,22 @@ public class MainActivity extends AppCompatActivity {
                             chatsModelArrayList.add(new ChatsModel("Write your ingredients separated by space", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
+                        }
+                        if (errorNumber == 0) {
+
+                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown. Calling your request again! Hold on...", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            getRecipeByIngredients(ingredients, number);
+
+                        } else if (errorNumber == 10) {
+
+                            chatsModelArrayList.add(new ChatsModel("Recipe API is not available now! Try again later", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+                            return;
+
                         }
 
                     } else {
@@ -275,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
         if (isNumberInString(choice) && Integer.parseInt(choice) <= numberOfRecipes && 1 <= Integer.parseInt(choice)) {
 
 
-            String url = "https://masterchefbot.herokuapp.com/chooseRecipe?nr=" + choice;
+            String url = "https://masterchefbot.herokuapp.com/pick-recipe-number?number=" + choice;
             String BASE_URL = "https://masterchefbot.herokuapp.com/";
 
             Retrofit retrofit = new Retrofit.Builder()
@@ -295,15 +387,24 @@ public class MainActivity extends AppCompatActivity {
 
                         if (isNumeric(msg.getCnt())) {
 
-                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown. Starting again...", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
+                            int errorNumber = Integer.parseInt(msg.getCnt());
 
-                            counter = 0;
+                            if (errorNumber == 0) {
 
-                            chatsModelArrayList.add(new ChatsModel("Write your ingredients separated by space", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
+                                chatsModelArrayList.add(new ChatsModel("Internal exception thrown. Calling your request again! Hold on...", BOT_KEY));
+                                chatRVAdapter.notifyDataSetChanged();
+                                scrollDown();
+
+                                chooseRecipe(numberChoice);
+
+                            } else if (errorNumber == 10) {
+
+                                chatsModelArrayList.add(new ChatsModel("Recipe API is not available now! Try again later", BOT_KEY));
+                                chatRVAdapter.notifyDataSetChanged();
+                                scrollDown();
+                                return;
+
+                            }
 
                         } else {
                             chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
@@ -348,7 +449,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void chat(String message) {
 
-        String url = "https://masterchefbot.herokuapp.com/chat?msg=" + message;
+        String url = "https://masterchefbot.herokuapp.com/chat-with-bot?message=" + message;
         String BASE_URL = "https://masterchefbot.herokuapp.com/";
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -366,41 +467,23 @@ public class MainActivity extends AppCompatActivity {
                     msg.setchatBotReply(msg.getCnt());
                     if (isNumeric(msg.getCnt())) {
 
-                        if (Integer.parseInt(msg.getCnt()) == 1) {
-                            chatsModelArrayList.add(new ChatsModel("Here you can start with new ingredients!", BOT_KEY));
+                        int errorNumber = Integer.parseInt(msg.getCnt());
+
+                        if (errorNumber == 0) {
+
+                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown. Calling your request again! Hold on...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
 
-                            counter = 0;
+                            chat(message);
 
-                            chatsModelArrayList.add(new ChatsModel("Write your ingredients separated by space", BOT_KEY));
+                        } else if (errorNumber == 10) {
+
+                            chatsModelArrayList.add(new ChatsModel("Recipe API is not available now! Try again later", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
+                            return;
 
-                        } else if (Integer.parseInt(msg.getCnt()) == 2) {
-
-                            chatsModelArrayList.add(new ChatsModel("You are welcome!", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
-
-                            counter = 3;
-
-                            chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
-                                    " You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
-                        } else if (Integer.parseInt(msg.getCnt()) == 3) {
-
-                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown!", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
-
-                            counter = 3;
-
-                            chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
-                                    " You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
                         }
 
                     } else {
