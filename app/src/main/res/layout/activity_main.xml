@@ -12,7 +12,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/idRVChats"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+
+        />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -21,14 +23,13 @@
         android:id="@+id/idRLMMsg">
 
         <EditText
+            android:id="@+id/idEdtMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Enter message"
-            android:textColorHint="@color/white"
-            android:id="@+id/idEdtMessage"
+            android:singleLine="true"
             android:textColor="@color/white"
-            android:singleLine="true">
-
+            android:textColorHint="@color/white">
 
 
         </EditText>

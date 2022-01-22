@@ -4,7 +4,10 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_chatbot.xml" value="0.22864583333333333" />
-        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/layout/activity_main.xml" value="0.1184573002754821" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_launcher_background.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_send.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_user.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/layout/chatbot_msg_rv_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/layout/user_msg_rv_item.xml" value="0.36666666666666664" />
       </map>
