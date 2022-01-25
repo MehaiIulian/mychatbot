@@ -1,15 +1,17 @@
 package com.example.chatbot;
 
+import static java.lang.Thread.sleep;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -26,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView chatsRV;
     private EditText userMsgEdt;
-    private FloatingActionButton sendMsgFab;
     private final String BOT_KEY = "bot";
     private final String USER_KEY = "user";
     private ArrayList<ChatsModel> chatsModelArrayList;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isNumberInString(String str) {
 
-        for (int i = 0; i <= str.length(); i++) {
+        for (int i = 0; i <= str.length() - 1; i++) {
 
             if (isNumeric(String.valueOf(str.charAt(i)))) return true;
 
@@ -76,19 +77,8 @@ public class MainActivity extends AppCompatActivity {
         numberOfRecipes = countBackSlash;
     }
 
-    public void setLayoutVisible() {
-        if (userMsgEdt.getVisibility() == View.GONE) {
-            userMsgEdt.setVisibility(View.VISIBLE);
-        }
-    }
 
-    public void setLayoutInvisible() {
-        if (userMsgEdt.getVisibility() == View.VISIBLE) {
-            userMsgEdt.setVisibility(View.GONE);
-        }
-    }
-
-
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,11 +96,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
         userMsgEdt = findViewById(R.id.idEdtMessage);
 
-        sendMsgFab = findViewById(R.id.idFABSend);
+
+        FloatingActionButton sendMsgFab = findViewById(R.id.idFABSend);
 
         chatsModelArrayList = new ArrayList<>();
         chatRVAdapter = new ChatRVAdapter(chatsModelArrayList, this);
@@ -118,15 +107,15 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
 
         chatsRV.setLayoutManager(manager);
-        ((LinearLayoutManager)chatsRV.getLayoutManager()).setStackFromEnd(true);
-        chatsRV.setPadding(0, 0, 0,200);
+        ((LinearLayoutManager) chatsRV.getLayoutManager()).setStackFromEnd(true);
+        chatsRV.setPadding(0, 0, 0, 200);
         chatsRV.setAdapter(chatRVAdapter);
         chatsRV.setNestedScrollingEnabled(false);
 
-        chatsModelArrayList.add(new ChatsModel("Hi! Im your recipe bot!", BOT_KEY));
+        chatsModelArrayList.add(new ChatsModel("Hi! Chefbot master at your service here! I'm here to help you find the best recipe in the world!", BOT_KEY));
         chatRVAdapter.notifyDataSetChanged();
 
-        chatsModelArrayList.add(new ChatsModel("Write your ingredients separated by space", BOT_KEY));
+        chatsModelArrayList.add(new ChatsModel("Please, write some ingredients separated by space for your recipe or you can tell if you're vegetarian to check for some vegetarian recipes!", BOT_KEY));
         chatRVAdapter.notifyDataSetChanged();
 
         sendMsgFab.setOnClickListener(new View.OnClickListener() {
@@ -134,13 +123,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (userMsgEdt.getText().toString().isEmpty()) {
 
-                    setLayoutVisible();
                     Toast.makeText(MainActivity.this, "Please enter your message", Toast.LENGTH_SHORT).show();
                     scrollDown();
                     return;
 
                 }
-
 
 
                 switch (counter) {
@@ -162,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
 
 
-                            chatsModelArrayList.add(new ChatsModel("How many do you want to see? Enter a number between 1 and 15", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("How many recipes do you want to see? Enter a number between 1 and 15", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
 
@@ -180,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                         chatRVAdapter.notifyDataSetChanged();
                         scrollDown();
 
-                        getRecipeByIngredients(ingredients, howMany);
+                        getNormalRecipes(ingredients, howMany);
                         break;
 
 
@@ -192,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                         chatRVAdapter.notifyDataSetChanged();
                         scrollDown();
 
-                        chooseRecipe(numberChoice);
+                        pickRecipe(numberChoice);
                         break;
 
                     case 3:
@@ -202,7 +189,8 @@ public class MainActivity extends AppCompatActivity {
                         chatsModelArrayList.add(new ChatsModel(message, USER_KEY));
                         chatRVAdapter.notifyDataSetChanged();
                         scrollDown();
-                        chat(message);
+                        chatWithBot(message);
+
                         break;
 
                 }
@@ -237,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (exceptionNumber == 0) {
 
-                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown. Calling your request again! Hold on...", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
 
@@ -262,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
 
                         counter = 2;
 
-                        chatsModelArrayList.add(new ChatsModel("Please enter the number of the recipe that you want!", BOT_KEY));
+                        chatsModelArrayList.add(new ChatsModel("Please pick a recipe! Anything !", BOT_KEY));
                         chatRVAdapter.notifyDataSetChanged();
                         scrollDown();
 
@@ -279,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void getRecipeByIngredients(String ingredients, String number) {
+    private void getNormalRecipes(String ingredients, String number) {
         String url = "https://masterchefbot.herokuapp.com/get-recipe-by-user-ingredients?ingredients=" + ingredients + "&number=" + number;
         String BASE_URL = "https://masterchefbot.herokuapp.com/";
 
@@ -301,13 +289,13 @@ public class MainActivity extends AppCompatActivity {
 
                         int errorNumber = Integer.parseInt(msg.getCnt());
                         if (errorNumber == 1) {
-                            chatsModelArrayList.add(new ChatsModel("You have not entered a number between 1 or 15. Enter a valid number...", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("Enter a valid number ...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
 
                             counter = 1;
 
-                            chatsModelArrayList.add(new ChatsModel("How many do you want to see? Enter a number between 1 and 15", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("How many recipes do you want to see? Enter a number between 1 and 15", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
                         } else if (errorNumber == 2) {
@@ -317,17 +305,17 @@ public class MainActivity extends AppCompatActivity {
 
                             counter = 0;
 
-                            chatsModelArrayList.add(new ChatsModel("Write your ingredients separated by space", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("Please, write some ingredients separated by space for your recipe or you can tell if you're vegetarian to check for some vegetarian recipes!", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
                         }
                         if (errorNumber == 0) {
 
-                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown. Calling your request again! Hold on...", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
 
-                            getRecipeByIngredients(ingredients, number);
+                            getNormalRecipes(ingredients, number);
 
                         } else if (errorNumber == 10) {
 
@@ -388,7 +376,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void chooseRecipe(String choice) {
+    private void pickRecipe(String choice) {
 
 
         if (isNumberInString(choice) && Integer.parseInt(choice) <= numberOfRecipes && 1 <= Integer.parseInt(choice)) {
@@ -418,11 +406,11 @@ public class MainActivity extends AppCompatActivity {
 
                             if (number == 0) {
 
-                                chatsModelArrayList.add(new ChatsModel("Internal exception thrown. Calling your request again! Hold on...", BOT_KEY));
+                                chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
                                 chatRVAdapter.notifyDataSetChanged();
                                 scrollDown();
 
-                                chooseRecipe(numberChoice);
+                                pickRecipe(numberChoice);
 
                             } else if (number == 10) {
 
@@ -440,8 +428,9 @@ public class MainActivity extends AppCompatActivity {
 
                             counter = 3;
 
-                            chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
-                                    "You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("Now, you can ask me some questions for your recipe.\n " +
+                                    "You can ask me how to cook it, what ingredients you need, what tools you need or maybe you're curious about recipe's nutrition!\n" +
+                                    "Also, you can exit anytime by typing exit or quit :) .", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
                         }
@@ -474,9 +463,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void chat(String message) {
+    private void chatWithBot(String message) {
 
-        String url = "https://masterchefbot.herokuapp.com/chat-with-bot?message=" + message;
+        String url = "https://masterchefbot.herokuapp.com/chatWithBot-with-bot?message=" + message;
         String BASE_URL = "https://masterchefbot.herokuapp.com/";
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -498,22 +487,19 @@ public class MainActivity extends AppCompatActivity {
 
                         if (errorNumber == 0) {
 
-                            chatsModelArrayList.add(new ChatsModel("Internal exception thrown. Calling your request again! Hold on...", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
 
-                            chat(message);
+                            chatWithBot(message);
 
                         } else if (errorNumber == 10) {
 
                             chatsModelArrayList.add(new ChatsModel("Recipe API is not available now! Try again later", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
-                            return;
 
-                        }
-
-                        else if (errorNumber == 1){
+                        } else if (errorNumber == 1) {
                             chatsModelArrayList.add(new ChatsModel("Here you can start with new ingredients!", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
@@ -523,6 +509,19 @@ public class MainActivity extends AppCompatActivity {
                             chatsModelArrayList.add(new ChatsModel("Enter your ingredients separated by space!", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
+                        } else if (errorNumber == -1) {
+
+                            chatsModelArrayList.add(new ChatsModel("Goodbye!", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+                            try {
+                                sleep(30);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+                            return;
                         }
 
                     } else {

@@ -26,29 +26,36 @@
             android:id="@+id/idEdtMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/edit_text_border"
             android:hint="Enter message"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="30dp"
             android:singleLine="true"
             android:textColor="@color/white"
-            android:textColorHint="@color/white">
+            android:textColorHint="@color/white"
+            android:textStyle="italic"
+            android:textIsSelectable="true">
 
 
         </EditText>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/idFABSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_send"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="-2dp"
+            android:layout_marginRight="-2dp"
             android:layout_toLeftOf="@id/idFABSend"
-            android:layout_margin="4dp"
-            app:fabCustomSize="45dp"
             android:backgroundTint="@color/fab_color"
-            android:tint="@color/white"
-            android:id="@+id/idFABSend">
+            android:src="@drawable/ic_send"
+            android:tint="@color/black"
+            app:fabCustomSize="45dp">
 
         </com.google.android.material.floatingactionbutton.FloatingActionButton>
-
 
 
     </RelativeLayout>
