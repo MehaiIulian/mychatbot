@@ -465,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void chatWithBot(String message) {
 
-        String url = "https://masterchefbot.herokuapp.com/chatWithBot-with-bot?message=" + message;
+        String url = "https://masterchefbot.herokuapp.com/chat-with-bot?message=" + message;
         String BASE_URL = "https://masterchefbot.herokuapp.com/";
 
         Retrofit retrofit = new Retrofit.Builder()
