@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
 
         chatsRV.setLayoutManager(manager);
         ((LinearLayoutManager) chatsRV.getLayoutManager()).setStackFromEnd(true);
-        chatsRV.setPadding(0, 0, 0, 200);
+        chatsRV.setPadding(10, 10, 10, 200);
         chatsRV.setAdapter(chatRVAdapter);
         chatsRV.setNestedScrollingEnabled(false);
 
