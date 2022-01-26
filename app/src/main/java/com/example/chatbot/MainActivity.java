@@ -11,6 +11,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -125,6 +127,10 @@ public class MainActivity extends AppCompatActivity {
 
                     Toast.makeText(MainActivity.this, "Please enter your message", Toast.LENGTH_SHORT).show();
                     scrollDown();
+
+                    Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                    userMsgEdt.startAnimation(shake);
+
                     return;
 
                 }

@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.22916666666666666" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/backgroud_shadow.xml" value="0.2735" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/edit_text.xml" value="0.2735" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/edit_text_border.xml" value="0.22916666666666666" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_chatbot.xml" value="0.22864583333333333" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_launcher_background.xml" value="0.22239583333333332" />
