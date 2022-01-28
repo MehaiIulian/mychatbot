@@ -256,7 +256,7 @@ public class MainActivity extends AppCompatActivity {
 
                         counter = 2;
 
-                        chatsModelArrayList.add(new ChatsModel("Please pick a recipe! Anything !", BOT_KEY));
+                        chatsModelArrayList.add(new ChatsModel("Please pick a recipe! Type the number of the recipe that you want!", BOT_KEY));
                         chatRVAdapter.notifyDataSetChanged();
                         scrollDown();
 
@@ -434,9 +434,9 @@ public class MainActivity extends AppCompatActivity {
 
                             counter = 3;
 
-                            chatsModelArrayList.add(new ChatsModel("Now, you can ask me some questions for your recipe.\n " +
+                            chatsModelArrayList.add(new ChatsModel("Now, you can ask me some questions for your recipe.\n" +
                                     "You can ask me how to cook it, what ingredients you need, what tools you need or maybe you're curious about recipe's nutrition!\n" +
-                                    "Also, you can exit anytime by typing exit or quit :) .", BOT_KEY));
+                                    "Also, you can exit anytime by typing exit or quit. If message appears empty please try again", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
                         }
@@ -506,7 +506,7 @@ public class MainActivity extends AppCompatActivity {
                             scrollDown();
 
                         } else if (errorNumber == 1) {
-                            chatsModelArrayList.add(new ChatsModel("Here you can start with new ingredients!", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("Here you can start with new ingredients or you can tell me if you are vegetarian!", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
 

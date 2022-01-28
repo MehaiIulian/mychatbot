@@ -31,10 +31,10 @@
         </TextView>
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
             android:src="@drawable/ic_question"
-            android:layout_margin="10dp">
+            android:layout_margin="5dp">
 
         </ImageView>
 

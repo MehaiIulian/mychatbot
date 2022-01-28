@@ -17,9 +17,9 @@
         android:background="@drawable/edit_text">
 
         <ImageView
-            android:layout_width="38dp"
-            android:layout_height="30dp"
-            android:layout_margin="10dp"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_margin="5dp"
             android:src="@drawable/ic_chatbot">
 
         </ImageView>
