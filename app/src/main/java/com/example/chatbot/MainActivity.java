@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -86,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //initializing components
-
 
         chatsRV = findViewById(R.id.idRVChats);
 
@@ -506,15 +506,12 @@ public class MainActivity extends AppCompatActivity {
                             scrollDown();
 
                         } else if (errorNumber == 1) {
-                            chatsModelArrayList.add(new ChatsModel("Here you can start with new ingredients or you can tell me if you are vegetarian!", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("Here you can start with new ingredients,please enter your ingredients separated by space or you can tell me if you are vegetarian!", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
 
                             counter = 0;
 
-                            chatsModelArrayList.add(new ChatsModel("Enter your ingredients separated by space!", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
                         } else if (errorNumber == -1) {
 
                             chatsModelArrayList.add(new ChatsModel("Goodbye!", BOT_KEY));
@@ -544,7 +541,13 @@ public class MainActivity extends AppCompatActivity {
                             scrollDown();
 
 
-                        } else {
+                        }else if(msg.getCnt().isEmpty()){
+
+                            chatWithBot(message);
+                        }
+
+
+                        else {
                             chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();

@@ -10,6 +10,6 @@
 
     <color name="back_color">#5900A2</color>
     <color name="bot_back_color">#BE0101</color>
-    <color name="user_back_color">#01BE21</color>
+    <color name="user_back_color">#748000</color>
     <color name="fab_color">#0170BE</color>
 </resources>

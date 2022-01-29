@@ -8,34 +8,50 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <ImageView
+        android:id="@+id/idRVBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_salad">
+
+    </ImageView>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/idRVChats"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
+
         />
 
+
     <RelativeLayout
+        android:id="@+id/idRLMMsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:id="@+id/idRLMMsg">
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp">
+
 
         <EditText
             android:id="@+id/idEdtMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/edit_text_border"
+            android:fontFamily="sans-serif-medium"
             android:hint="Enter message"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
-            android:paddingBottom="30dp"
+            android:paddingBottom="20dp"
             android:singleLine="true"
             android:textColor="@color/white"
             android:textColorHint="@color/white"
-            android:textStyle="italic"
-            android:textIsSelectable="true">
+            android:textIsSelectable="true"
+            android:textSize="20dp"
+            android:textStyle="italic">
 
 
         </EditText>
@@ -44,12 +60,12 @@
             android:id="@+id/idFABSend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="-2dp"
-            android:layout_marginRight="-2dp"
-            android:layout_toLeftOf="@id/idFABSend"
+            android:layout_marginStart="5dp"
+
+            android:layout_marginRight="-3dp"
             android:backgroundTint="@color/fab_color"
             android:src="@drawable/ic_send"
             android:tint="@color/black"

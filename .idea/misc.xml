@@ -4,14 +4,21 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.22916666666666666" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/backgroud_image.xml" value="0.3525" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/backgroud_shadow.xml" value="0.2735" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/edit_text.xml" value="0.2735" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/edit_text_border.xml" value="0.22916666666666666" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_chatbot.xml" value="0.22864583333333333" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_chatbot_color.xml" value="0.268" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_food_background.xml" value="0.268" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_image2vector__1_.xml" value="0.268" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_image2vectorsplit.xml" value="0.193" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_launcher_background.xml" value="0.22239583333333332" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_question.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_salad.xml" value="0.232" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_send.xml" value="0.22239583333333332" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_user.xml" value="0.22239583333333332" />
+        <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/drawable/ic_user_color.xml" value="0.232" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/layout/chatbot_msg_rv_item.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/mihai/AndroidStudioProjects/mychatbot/app/src/main/res/layout/user_msg_rv_item.xml" value="0.36666666666666664" />
