@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -269,6 +268,17 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, String.valueOf(t));
                 chatsModelArrayList.add(new ChatsModel("Error processing response", BOT_KEY));
                 scrollDown();
+
+                chatsModelArrayList.add(new ChatsModel("Hi! Chefbot master at your service here! I'm here to help you find the best recipe in the world!", BOT_KEY));
+                chatRVAdapter.notifyDataSetChanged();
+                scrollDown();
+
+                chatsModelArrayList.add(new ChatsModel("Please, write some ingredients separated by space for your recipe or you can tell if you're vegetarian to check for some vegetarian recipes!", BOT_KEY));
+                chatRVAdapter.notifyDataSetChanged();
+                scrollDown();
+
+                counter = 0;
+
             }
         });
     }
@@ -378,6 +388,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, String.valueOf(t));
                 chatsModelArrayList.add(new ChatsModel("Error processing response", BOT_KEY));
                 scrollDown();
+
+                chatsModelArrayList.add(new ChatsModel("Hi! Chefbot master at your service here! I'm here to help you find the best recipe in the world!", BOT_KEY));
+                chatRVAdapter.notifyDataSetChanged();
+                scrollDown();
+
+                chatsModelArrayList.add(new ChatsModel("Please, write some ingredients separated by space for your recipe or you can tell if you're vegetarian to check for some vegetarian recipes!", BOT_KEY));
+                chatRVAdapter.notifyDataSetChanged();
+                scrollDown();
+
+                counter = 0;
             }
         });
     }
@@ -456,6 +476,16 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, String.valueOf(t));
                     chatsModelArrayList.add(new ChatsModel("Error processing response", BOT_KEY));
                     scrollDown();
+
+                    chatsModelArrayList.add(new ChatsModel("Hi! Chefbot master at your service here! I'm here to help you find the best recipe in the world!", BOT_KEY));
+                    chatRVAdapter.notifyDataSetChanged();
+                    scrollDown();
+
+                    chatsModelArrayList.add(new ChatsModel("Please, write some ingredients separated by space for your recipe or you can tell if you're vegetarian to check for some vegetarian recipes!", BOT_KEY));
+                    chatRVAdapter.notifyDataSetChanged();
+                    scrollDown();
+
+                    counter = 0;
                 }
             });
 
@@ -568,6 +598,16 @@ public class MainActivity extends AppCompatActivity {
                     chatsModelArrayList.add(new ChatsModel("Please check the message", BOT_KEY));
                     chatRVAdapter.notifyDataSetChanged();
                     scrollDown();
+
+                    chatsModelArrayList.add(new ChatsModel("Hi! Chefbot master at your service here! I'm here to help you find the best recipe in the world!", BOT_KEY));
+                    chatRVAdapter.notifyDataSetChanged();
+                    scrollDown();
+
+                    chatsModelArrayList.add(new ChatsModel("Please, write some ingredients separated by space for your recipe or you can tell if you're vegetarian to check for some vegetarian recipes!", BOT_KEY));
+                    chatRVAdapter.notifyDataSetChanged();
+                    scrollDown();
+
+                    counter = 0;
 
 
                 }
