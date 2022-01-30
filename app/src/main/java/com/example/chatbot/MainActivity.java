@@ -599,16 +599,6 @@ public class MainActivity extends AppCompatActivity {
                     chatRVAdapter.notifyDataSetChanged();
                     scrollDown();
 
-                    chatsModelArrayList.add(new ChatsModel("Hi! Chefbot master at your service here! I'm here to help you find the best recipe in the world!", BOT_KEY));
-                    chatRVAdapter.notifyDataSetChanged();
-                    scrollDown();
-
-                    chatsModelArrayList.add(new ChatsModel("Please, write some ingredients separated by space for your recipe or you can tell if you're vegetarian to check for some vegetarian recipes!", BOT_KEY));
-                    chatRVAdapter.notifyDataSetChanged();
-                    scrollDown();
-
-                    counter = 0;
-
 
                 }
             }
@@ -618,6 +608,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, String.valueOf(t));
                 chatsModelArrayList.add(new ChatsModel("Error processing response", BOT_KEY));
                 scrollDown();
+
+                chatsModelArrayList.add(new ChatsModel("Hi! Chefbot master at your service here! I'm here to help you find the best recipe in the world!", BOT_KEY));
+                chatRVAdapter.notifyDataSetChanged();
+                scrollDown();
+
+                chatsModelArrayList.add(new ChatsModel("Please, write some ingredients separated by space for your recipe or you can tell if you're vegetarian to check for some vegetarian recipes!", BOT_KEY));
+                chatRVAdapter.notifyDataSetChanged();
+                scrollDown();
+
+                counter = 0;
             }
         });
 
