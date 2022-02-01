@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private String numberChoice;
     private String message;
     private int numberOfRecipes;
+    private int timer = 0;
 
     private void scrollDown() {
         chatsRV.scrollToPosition(chatsModelArrayList.size() - 1);
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
 
                         if (stringSearch("vegetarian", ingredients)) {
 
-
+                            timer = 0;
                             getVegetarianRecipes();
                             break;
 
@@ -172,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
                         chatRVAdapter.notifyDataSetChanged();
                         scrollDown();
 
+                        timer = 0;
                         getNormalRecipes(ingredients, howMany);
                         break;
 
@@ -184,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
                         chatRVAdapter.notifyDataSetChanged();
                         scrollDown();
 
+                        timer = 0;
                         pickRecipe(numberChoice);
                         break;
 
@@ -194,8 +197,9 @@ public class MainActivity extends AppCompatActivity {
                         chatsModelArrayList.add(new ChatsModel(message, USER_KEY));
                         chatRVAdapter.notifyDataSetChanged();
                         scrollDown();
-                        chatWithBot(message);
 
+                        timer = 0;
+                        chatWithBot(message);
                         break;
 
                 }
@@ -230,9 +234,19 @@ public class MainActivity extends AppCompatActivity {
 
                         if (exceptionNumber == 0) {
 
-                            chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
+                            if (timer == 3) {
+
+                                chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
+                                chatRVAdapter.notifyDataSetChanged();
+                                scrollDown();
+                                timer = 0;
+
+
+                            } else {
+                                timer++;
+
+                            }
+
 
                             getVegetarianRecipes();
 
@@ -247,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     } else {
+
                         countRecipes(msg.getCnt());
 
                         chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
@@ -327,9 +342,18 @@ public class MainActivity extends AppCompatActivity {
                         }
                         if (errorNumber == 0) {
 
-                            chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
+                            if (timer == 3) {
+
+                                chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
+                                chatRVAdapter.notifyDataSetChanged();
+                                scrollDown();
+                                timer = 0;
+
+
+                            } else {
+                                timer++;
+
+                            }
 
                             getNormalRecipes(ingredients, number);
 
@@ -344,8 +368,10 @@ public class MainActivity extends AppCompatActivity {
 
                     } else {
 
+
                         countRecipes(msg.getCnt());
                         if (numberOfRecipes < Integer.parseInt(number)) {
+
                             chatsModelArrayList.add(new ChatsModel("There are only " + numberOfRecipes + " recipes...", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
@@ -432,9 +458,18 @@ public class MainActivity extends AppCompatActivity {
 
                             if (number == 0) {
 
-                                chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
-                                chatRVAdapter.notifyDataSetChanged();
-                                scrollDown();
+                                if (timer == 3) {
+
+                                    chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
+                                    chatRVAdapter.notifyDataSetChanged();
+                                    scrollDown();
+                                    timer = 0;
+
+
+                                } else {
+                                    timer++;
+
+                                }
 
                                 pickRecipe(numberChoice);
 
@@ -523,9 +558,18 @@ public class MainActivity extends AppCompatActivity {
 
                         if (errorNumber == 0) {
 
-                            chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
+                            if (timer == 3) {
+
+                                chatsModelArrayList.add(new ChatsModel("Hold on a second! I'm working on it ...", BOT_KEY));
+                                chatRVAdapter.notifyDataSetChanged();
+                                scrollDown();
+                                timer = 0;
+
+
+                            } else {
+                                timer++;
+
+                            }
 
                             chatWithBot(message);
 
@@ -549,12 +593,12 @@ public class MainActivity extends AppCompatActivity {
                             scrollDown();
 
                             try {
-                                sleep(30);
+                                sleep(3000);
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
 
-                            return;
+                            finishAndRemoveTask();
                         }
 
                     } else {
@@ -571,13 +615,10 @@ public class MainActivity extends AppCompatActivity {
                             scrollDown();
 
 
-                        }else if(msg.getCnt().isEmpty()){
+                        } else if (msg.getCnt().isEmpty()) {
 
                             chatWithBot(message);
-                        }
-
-
-                        else {
+                        } else {
                             chatsModelArrayList.add(new ChatsModel(msg.getCnt(), BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
