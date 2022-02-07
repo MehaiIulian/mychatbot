@@ -7,8 +7,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -80,6 +84,25 @@ public class MainActivity extends AppCompatActivity {
         numberOfRecipes = countBackSlash;
     }
 
+    public Drawable scaleImage (Drawable image, float scaleFactor) {
+
+        if ((image == null) || !(image instanceof BitmapDrawable)) {
+            return image;
+        }
+
+        Bitmap b = ((BitmapDrawable)image).getBitmap();
+
+        int sizeX = Math.round(image.getIntrinsicWidth() * scaleFactor);
+        int sizeY = Math.round(image.getIntrinsicHeight() * scaleFactor);
+
+        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
+
+        image = new BitmapDrawable(getResources(), bitmapResized);
+
+        return image;
+
+    }
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -87,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //initializing components
+
 
         chatsRV = findViewById(R.id.idRVChats);
 
@@ -99,7 +123,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         userMsgEdt = findViewById(R.id.idEdtMessage);
-
+        float value = userMsgEdt.getTextSize();
+        int padding = (int) (value * 4f);
 
         FloatingActionButton sendMsgFab = findViewById(R.id.idFABSend);
 
@@ -110,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         chatsRV.setLayoutManager(manager);
         ((LinearLayoutManager) chatsRV.getLayoutManager()).setStackFromEnd(true);
-        chatsRV.setPadding(10, 10, 10, 200);
+        chatsRV.setPadding(0, 0, 0, padding);
         chatsRV.setAdapter(chatRVAdapter);
         chatsRV.setNestedScrollingEnabled(false);
 
@@ -588,17 +613,20 @@ public class MainActivity extends AppCompatActivity {
 
                         } else if (errorNumber == -1) {
 
-                            chatsModelArrayList.add(new ChatsModel("Goodbye!", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
 
                             try {
-                                sleep(3000);
+                                chatsModelArrayList.add(new ChatsModel("Goodbye!", BOT_KEY));
+                                chatRVAdapter.notifyDataSetChanged();
+                                scrollDown();
+
+                                sleep(5000);
+                                finishAndRemoveTask();
+
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
 
-                            finishAndRemoveTask();
+
                         }
 
                     } else {

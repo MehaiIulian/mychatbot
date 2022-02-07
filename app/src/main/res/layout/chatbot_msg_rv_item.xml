@@ -7,19 +7,21 @@
     android:layout_margin="5dp"
     android:elevation="8dp"
     app:cardBackgroundColor="@color/bot_back_color"
-    app:cardCornerRadius="8dp">
+    app:cardCornerRadius="8dp"
+    >
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:background="@drawable/edit_text"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        >
 
         <ImageView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_margin="5dp"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:layout_margin="@dimen/_5sdp"
             android:src="@drawable/ic_chatbot_color">
 
         </ImageView>
@@ -32,11 +34,12 @@
             android:layout_gravity="center"
             android:layout_margin="5dp"
             android:fontFamily="sans-serif-medium"
-            android:padding="3dp"
+            android:padding="@dimen/_3sdp"
             android:text="Bot Message"
             android:textColor="@color/white"
             android:textIsSelectable="true"
-            android:textSize="15dp">
+            android:textSize="@dimen/_15sdp">
+
 
         </TextView>
 
