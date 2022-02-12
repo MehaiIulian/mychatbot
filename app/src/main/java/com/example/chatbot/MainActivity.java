@@ -2,27 +2,24 @@ package com.example.chatbot;
 
 import static java.lang.Thread.sleep;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -52,8 +49,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean stringSearch(String toBeSearched, String str) {
-        boolean isFound = str.indexOf(toBeSearched) != -1 ? true : false;
-        return isFound;
+        return str.contains(toBeSearched);
     }
 
     private boolean isNumberInString(String str) {
@@ -84,26 +80,8 @@ public class MainActivity extends AppCompatActivity {
         numberOfRecipes = countBackSlash;
     }
 
-    public Drawable scaleImage (Drawable image, float scaleFactor) {
 
-        if ((image == null) || !(image instanceof BitmapDrawable)) {
-            return image;
-        }
-
-        Bitmap b = ((BitmapDrawable)image).getBitmap();
-
-        int sizeX = Math.round(image.getIntrinsicWidth() * scaleFactor);
-        int sizeY = Math.round(image.getIntrinsicHeight() * scaleFactor);
-
-        Bitmap bitmapResized = Bitmap.createScaledBitmap(b, sizeX, sizeY, false);
-
-        image = new BitmapDrawable(getResources(), bitmapResized);
-
-        return image;
-
-    }
-
-
+    @SuppressLint("NotifyDataSetChanged")
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,12 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         chatsRV = findViewById(R.id.idRVChats);
 
-        chatsRV.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                chatsRV.scrollToPosition(chatsRV.getAdapter().getItemCount() - 1);
-            }
-        });
+        chatsRV.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> chatsRV.scrollToPosition(Objects.requireNonNull(chatsRV.getAdapter()).getItemCount() - 1));
 
 
         userMsgEdt = findViewById(R.id.idEdtMessage);
@@ -134,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         LinearLayoutManager manager = new LinearLayoutManager(this);
 
         chatsRV.setLayoutManager(manager);
-        ((LinearLayoutManager) chatsRV.getLayoutManager()).setStackFromEnd(true);
+        ((LinearLayoutManager) Objects.requireNonNull(chatsRV.getLayoutManager())).setStackFromEnd(true);
         chatsRV.setPadding(0, 0, 0, padding);
         chatsRV.setAdapter(chatRVAdapter);
         chatsRV.setNestedScrollingEnabled(false);
@@ -145,91 +118,88 @@ public class MainActivity extends AppCompatActivity {
         chatsModelArrayList.add(new ChatsModel("Please, write some ingredients separated by space for your recipe or you can tell if you're vegetarian to check for some vegetarian recipes!", BOT_KEY));
         chatRVAdapter.notifyDataSetChanged();
 
-        sendMsgFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (userMsgEdt.getText().toString().isEmpty()) {
+        sendMsgFab.setOnClickListener(v -> {
+            if (userMsgEdt.getText().toString().isEmpty()) {
 
-                    Toast.makeText(MainActivity.this, "Please enter your message", Toast.LENGTH_SHORT).show();
-                    scrollDown();
+                Toast.makeText(MainActivity.this, "Please enter your message", Toast.LENGTH_SHORT).show();
+                scrollDown();
 
-                    Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
-                    userMsgEdt.startAnimation(shake);
+                Animation shake = AnimationUtils.loadAnimation(MainActivity.this, R.anim.shake);
+                userMsgEdt.startAnimation(shake);
 
-                    return;
-
-                }
-
-
-                switch (counter) {
-                    case 0:
-
-                        ingredients = userMsgEdt.getText().toString();
-                        userMsgEdt.setText("");
-
-                        chatsModelArrayList.add(new ChatsModel(ingredients, USER_KEY));
-                        chatRVAdapter.notifyDataSetChanged();
-                        scrollDown();
-
-                        if (stringSearch("vegetarian", ingredients)) {
-
-                            timer = 0;
-                            getVegetarianRecipes();
-                            break;
-
-                        } else {
-
-
-                            chatsModelArrayList.add(new ChatsModel("How many recipes do you want to see? Enter a number between 1 and 15", BOT_KEY));
-                            chatRVAdapter.notifyDataSetChanged();
-                            scrollDown();
-
-                            counter = 1;
-
-                            break;
-
-                        }
-
-                    case 1:
-                        howMany = userMsgEdt.getText().toString();
-                        userMsgEdt.setText("");
-
-                        chatsModelArrayList.add(new ChatsModel(howMany, USER_KEY));
-                        chatRVAdapter.notifyDataSetChanged();
-                        scrollDown();
-
-                        timer = 0;
-                        getNormalRecipes(ingredients, howMany);
-                        break;
-
-
-                    case 2:
-                        numberChoice = userMsgEdt.getText().toString();
-                        userMsgEdt.setText("");
-
-                        chatsModelArrayList.add(new ChatsModel(numberChoice, USER_KEY));
-                        chatRVAdapter.notifyDataSetChanged();
-                        scrollDown();
-
-                        timer = 0;
-                        pickRecipe(numberChoice);
-                        break;
-
-                    case 3:
-                        message = userMsgEdt.getText().toString();
-                        scrollDown();
-                        userMsgEdt.setText("");
-                        chatsModelArrayList.add(new ChatsModel(message, USER_KEY));
-                        chatRVAdapter.notifyDataSetChanged();
-                        scrollDown();
-
-                        timer = 0;
-                        chatWithBot(message);
-                        break;
-
-                }
+                return;
 
             }
+
+
+            switch (counter) {
+                case 0:
+
+                    ingredients = userMsgEdt.getText().toString();
+                    userMsgEdt.setText("");
+
+                    chatsModelArrayList.add(new ChatsModel(ingredients, USER_KEY));
+                    chatRVAdapter.notifyDataSetChanged();
+                    scrollDown();
+
+                    if (stringSearch("vegetarian", ingredients)) {
+
+                        timer = 0;
+                        getVegetarianRecipes();
+                        break;
+
+                    } else {
+
+
+                        chatsModelArrayList.add(new ChatsModel("How many recipes do you want to see? Enter a number between 1 and 15", BOT_KEY));
+                        chatRVAdapter.notifyDataSetChanged();
+                        scrollDown();
+
+                        counter = 1;
+
+                        break;
+
+                    }
+
+                case 1:
+                    howMany = userMsgEdt.getText().toString();
+                    userMsgEdt.setText("");
+
+                    chatsModelArrayList.add(new ChatsModel(howMany, USER_KEY));
+                    chatRVAdapter.notifyDataSetChanged();
+                    scrollDown();
+
+                    timer = 0;
+                    getNormalRecipes(ingredients, howMany);
+                    break;
+
+
+                case 2:
+                    numberChoice = userMsgEdt.getText().toString();
+                    userMsgEdt.setText("");
+
+                    chatsModelArrayList.add(new ChatsModel(numberChoice, USER_KEY));
+                    chatRVAdapter.notifyDataSetChanged();
+                    scrollDown();
+
+                    timer = 0;
+                    pickRecipe(numberChoice);
+                    break;
+
+                case 3:
+                    message = userMsgEdt.getText().toString();
+                    scrollDown();
+                    userMsgEdt.setText("");
+                    chatsModelArrayList.add(new ChatsModel(message, USER_KEY));
+                    chatRVAdapter.notifyDataSetChanged();
+                    scrollDown();
+
+                    timer = 0;
+                    chatWithBot(message);
+                    break;
+
+            }
+
         });
 
     }
@@ -251,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<MsgModel> call, Response<MsgModel> response) {
                 if (response.isSuccessful()) {
                     MsgModel msg = response.body();
-                    msg.setchatBotReply(msg.getCnt());
+                    msg.setChatBotReply(msg.getCnt());
 
                     if (isNumeric(msg.getCnt())) {
 
@@ -276,7 +246,6 @@ public class MainActivity extends AppCompatActivity {
                             getVegetarianRecipes();
 
                         } else if (exceptionNumber == 10) {
-
 
                             chatsModelArrayList.add(new ChatsModel("Recipe API is not available now! Try again later", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
@@ -339,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<MsgModel> call, Response<MsgModel> response) {
                 if (response.isSuccessful()) {
                     MsgModel msg = response.body();
-                    msg.setchatBotReply(msg.getCnt());
+                    msg.setChatBotReply(msg.getCnt());
 
                     if (isNumeric(msg.getCnt())) {
 
@@ -474,7 +443,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<MsgModel> call, Response<MsgModel> response) {
                     if (response.isSuccessful()) {
                         MsgModel msg = response.body();
-                        msg.setchatBotReply(msg.getCnt());
+                        msg.setChatBotReply(msg.getCnt());
 
 
                         if (isNumeric(msg.getCnt())) {
@@ -576,7 +545,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<MsgModel> call, Response<MsgModel> response) {
                 if (response.isSuccessful()) {
                     MsgModel msg = response.body();
-                    msg.setchatBotReply(msg.getCnt());
+                    msg.setChatBotReply(msg.getCnt());
                     if (isNumeric(msg.getCnt())) {
 
                         int errorNumber = Integer.parseInt(msg.getCnt());

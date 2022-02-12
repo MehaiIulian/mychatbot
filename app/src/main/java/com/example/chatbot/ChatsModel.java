@@ -2,8 +2,8 @@ package com.example.chatbot;
 
 public class ChatsModel {
 
-    private String message;
-    private String sender;
+    private final String message;
+    private final String sender;
     //to display in different views
 
 
@@ -20,11 +20,12 @@ public class ChatsModel {
         return sender;
     }
 
+    /*
     public void setMessage(String message) {
         this.message = message;
     }
 
     public void setSender(String sender) {
         this.sender = sender;
-    }
+    }*/
 }

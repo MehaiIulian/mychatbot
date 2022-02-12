@@ -11,10 +11,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("ALL")
 public class ChatRVAdapter extends RecyclerView.Adapter {
 
-    private ArrayList<ChatsModel> chatsModelArrayList;
-    private Context context;
+    private final ArrayList<ChatsModel> chatsModelArrayList;
+    private final Context context;
 
     public ChatRVAdapter(ArrayList<ChatsModel> chatsModelArrayList, Context context) {
         this.chatsModelArrayList = chatsModelArrayList;

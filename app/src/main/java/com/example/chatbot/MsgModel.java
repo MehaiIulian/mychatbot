@@ -11,7 +11,7 @@ public class MsgModel {
         return chatBotReply;
     }
 
-    public void setchatBotReply(String chatBotReply) {
+    public void setChatBotReply(String chatBotReply) {
         this.chatBotReply = chatBotReply;
     }
 
