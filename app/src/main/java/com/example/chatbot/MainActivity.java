@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    public boolean isNumeric(String str) {
+    private boolean isNumeric(String str) {
         try {
             Integer.parseInt(str);
             return true;
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void countRecipes(String aString) {
+    private void countRecipes(String aString) {
         int countBackSlash = 0;
         for (int i = 0; i < aString.length(); i++) {
             if (aString.charAt(i) == '\n') countBackSlash++;
