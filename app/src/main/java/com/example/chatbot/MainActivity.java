@@ -1,14 +1,19 @@
 package com.example.chatbot;
 
 import static java.lang.Thread.sleep;
+import static java.security.AccessController.getContext;
 
 import android.annotation.SuppressLint;
+import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
@@ -17,6 +22,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -132,7 +140,9 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
+            ImageView image = (ImageView) findViewById(R.id.idRVImage);
             switch (counter) {
+
                 case 0:
 
                     ingredients = userMsgEdt.getText().toString();
@@ -162,6 +172,8 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                 case 1:
+
+
                     howMany = userMsgEdt.getText().toString();
                     userMsgEdt.setText("");
 
@@ -175,6 +187,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                 case 2:
+
                     numberChoice = userMsgEdt.getText().toString();
                     userMsgEdt.setText("");
 
@@ -187,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case 3:
+
                     message = userMsgEdt.getText().toString();
                     scrollDown();
                     userMsgEdt.setText("");
@@ -205,6 +219,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getVegetarianRecipes() {
+        ImageView image = (ImageView) findViewById(R.id.idRVImage);
+        if(image.getVisibility() == View.VISIBLE){
+            image.setVisibility(View.GONE);
+        }
 
         String url = "https://masterchefbot.herokuapp.com/get-vegetarian-recipes";
         String BASE_URL = "https://masterchefbot.herokuapp.com/";
@@ -293,6 +311,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getNormalRecipes(String ingredients, String number) {
+        ImageView image = (ImageView) findViewById(R.id.idRVImage);
+        if(image.getVisibility() == View.VISIBLE){
+            image.setVisibility(View.GONE);
+        }
+
         String url = "https://masterchefbot.herokuapp.com/get-recipe-by-user-ingredients?ingredients=" + ingredients + "&number=" + number;
         String BASE_URL = "https://masterchefbot.herokuapp.com/";
 
@@ -423,7 +446,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickRecipe(String choice) {
-
+        ImageView image = (ImageView) findViewById(R.id.idRVImage);
+        if(image.getVisibility() == View.VISIBLE){
+            image.setVisibility(View.GONE);
+        }
 
         if (isNumberInString(choice) && Integer.parseInt(choice) <= numberOfRecipes && 1 <= Integer.parseInt(choice)) {
 
@@ -483,9 +509,8 @@ public class MainActivity extends AppCompatActivity {
 
                             counter = 3;
 
-                            chatsModelArrayList.add(new ChatsModel("Now, you can ask me some questions for your recipe.\n" +
-                                    "You can ask me how to cook it, what ingredients you need, what tools you need or maybe you're curious about recipe's nutrition!\n" +
-                                    "Also, you can exit anytime by typing exit or quit. If message appears empty please try again", BOT_KEY));
+                            chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
+                                    "You can ask me about the ingredients,food image, the cooking steps, the recipe's nutrition, equipment or simply ask to go back or make a new search.\n", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
                         }
@@ -529,6 +554,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void chatWithBot(String message) {
+        ImageView image = (ImageView) findViewById(R.id.idRVImage);
+        if(image.getVisibility() == View.VISIBLE){
+            image.setVisibility(View.GONE);
+        }
+
 
         String url = "https://masterchefbot.herokuapp.com/chat-with-bot?message=" + message;
         String BASE_URL = "https://masterchefbot.herokuapp.com/";
@@ -612,6 +642,23 @@ public class MainActivity extends AppCompatActivity {
                             scrollDown();
 
 
+                        } else if (stringSearch(".jpg", msg.getCnt())) {
+                            ImageView image = (ImageView) findViewById(R.id.idRVImage);
+
+                            image.setVisibility(View.VISIBLE);
+
+                            String imageUri = msg.getCnt();
+
+                            Picasso.get().load(imageUri).into(image);
+
+                            counter = 3;
+
+                            chatsModelArrayList.add(new ChatsModel(
+                                    "You can ask me about the ingredients, the cooking steps, the recipe's nutrition, equipment or simply ask to go back or make a new search.\n", BOT_KEY));
+                            chatRVAdapter.notifyDataSetChanged();
+                            scrollDown();
+
+
                         } else if (msg.getCnt().isEmpty()) {
 
                             chatWithBot(message);
@@ -623,7 +670,7 @@ public class MainActivity extends AppCompatActivity {
                             counter = 3;
 
                             chatsModelArrayList.add(new ChatsModel("Ask me questions about the chosen recipe.\n " +
-                                    "You can ask me about the ingredients, the cooking steps, the recipe's nutrition or simply ask to go back or make a new search.\n", BOT_KEY));
+                                    "You can ask me about the ingredients,food image, the cooking steps, the recipe's nutrition, equipment or simply ask to go back or make a new search.\n", BOT_KEY));
                             chatRVAdapter.notifyDataSetChanged();
                             scrollDown();
 

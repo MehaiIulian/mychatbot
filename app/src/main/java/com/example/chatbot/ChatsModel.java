@@ -1,5 +1,7 @@
 package com.example.chatbot;
 
+import android.widget.ImageView;
+
 public class ChatsModel {
 
     private final String message;
@@ -11,6 +13,7 @@ public class ChatsModel {
         this.message = message;
         this.sender = sender;
     }
+
 
     public String getMessage() {
         return message;

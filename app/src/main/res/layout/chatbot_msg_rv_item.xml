@@ -7,25 +7,34 @@
     android:layout_margin="5dp"
     android:elevation="8dp"
     app:cardBackgroundColor="@color/bot_back_color"
-    app:cardCornerRadius="8dp"
-    >
+    app:cardCornerRadius="8dp">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:background="@drawable/edit_text"
-        android:orientation="horizontal"
-        >
+        android:orientation="vertical">
 
         <ImageView
             android:layout_width="@dimen/_50sdp"
             android:layout_height="@dimen/_50sdp"
             android:layout_margin="@dimen/_5sdp"
-            android:src="@drawable/ic_chatbot_color">
+            android:src="@drawable/ic_chatbot_color"
+            android:layout_gravity="center">
 
         </ImageView>
 
+
+        <ImageView
+            android:id="@+id/idRVImage"
+            android:layout_width="@dimen/_200sdp"
+            android:layout_height="@dimen/_200sdp"
+            android:layout_margin="@dimen/_5sdp"
+            android:layout_gravity="center"
+            android:visibility="gone">
+
+        </ImageView>
 
         <TextView
             android:id="@+id/idRVBot"
@@ -42,6 +51,7 @@
 
 
         </TextView>
+
 
     </LinearLayout>
 
